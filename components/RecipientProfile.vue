@@ -1,26 +1,23 @@
 <template>
   <v-row cols="12">
-    <v-img
-      class="profile-avatar"
-      :src="user.avatar"
-    />
+    <v-img class="profile-avatar" :src="user.avatar" />
     <v-col class="profile-info pl-5">
-      <h3>{{user.name}}</h3>
-      <p>LOREM LORE MTEXT LOREM TEXT TEXT JSDKFSDJKFNSDJ</p>
+      <h2>{{ user.name }}</h2>
+      <p>Per aspera ad astra</p>
       <div @click="openMenu" class="profile-open-button">Открыть меню</div>
     </v-col>
   </v-row>
 </template>
+
 <script>
-
 export default {
-    props: ['user'],
+  props: ['user'],
 
-    methods: {
-      openMenu() {
-        this.$emit('action')
-      }
-    }
+  methods: {
+    openMenu() {
+      this.$emit('action')
+    },
+  },
 }
 </script>
 
@@ -44,10 +41,9 @@ export default {
   border-radius: 5px;
 }
 
-@media(max-width: 425px) {
+@media (max-width: 425px) {
   .profile-open-button {
     display: block;
   }
 }
-
 </style>

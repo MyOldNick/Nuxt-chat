@@ -30,6 +30,7 @@
     </div>
   </div>
 </template>
+
 <script>
 export default {
   props: ['author', 'text', 'created'],
@@ -54,6 +55,7 @@ export default {
   },
 }
 </script>
+
 <style scoped>
 .message-container {
   width: 100%;
@@ -103,9 +105,6 @@ export default {
   max-width: 100%;
   min-height: 35px;
   padding: 10px 15px;
-  /* padding-top: 8px;
-  padding-left: 15px;
-  padding-right: 15px; */
   padding-bottom: 1px;
   background-color: white;
   border-radius: 0px 0px 8px 8px;

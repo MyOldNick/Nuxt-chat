@@ -16,6 +16,7 @@
     </div>
   </div>
 </template>
+
 <script>
 //components
 import UserCard from './UserCard'
@@ -52,6 +53,7 @@ export default {
   },
 }
 </script>
+
 <style scoped>
 .list-container {
   background-color: white;
@@ -76,5 +78,4 @@ export default {
   outline: none !important;
   border: 2px solid #74b9ef;
 }
-
 </style>

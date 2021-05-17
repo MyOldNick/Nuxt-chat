@@ -1,4 +1,3 @@
-//helpers
 import createDialog from '~/helpers/dialogCreator'
 
 export const state = () => ({
@@ -34,13 +33,12 @@ export const mutations = {
 
         const { author, recipient } = payload
 
+        //немного колхоза, хех)))00
         const dialog = state.dialogs.find(el => el.users.find(user => user.id === author.id) && el.users.find(user => user.id === recipient.id))
 
-        if(!dialog ) {
-            // state.dialogs = [...state.dialogs, newDialog]
-            state.dialogs.push(createDialog([author, recipient], [payload]))
+        if(!dialog ) state.dialogs.push(createDialog([author, recipient], [payload]))
 
-        } else dialog.messages.push(payload)
+        else dialog.messages.push(payload)
 
     },
 
@@ -78,8 +76,10 @@ export const actions = {
         const res = await fetch(`https://randomuser.me/api/`)
         
         const { results } = await res.json()
+
+        const { name, login, picture } = results[0]
   
-        const user = { name: results[0].name.first, id: results[0].login.uuid , avatar: results[0].picture.large }
+        const user = { name: name.first, id: login.uuid , avatar: picture.large }
 
         commit("setUser", user)
 
