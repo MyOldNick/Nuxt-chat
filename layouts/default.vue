@@ -20,5 +20,6 @@ export default {}
   .background-layout {
     background-color: #586670;
     height: 100%;
+    overflow-x: hidden;
   }
 </style>

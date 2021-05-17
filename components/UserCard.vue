@@ -1,11 +1,27 @@
 <template >
-  <div @click="click" :class="['d-flex', 'pt-3', 'pb-3', 'pl-3', 'pr-3', 'user-card', active && 'user-card-active']">
-    <div :class="{'user-card-avatar': online}">
+  <div
+    @click="click"
+    :class="[
+      'd-flex',
+      'pt-3',
+      'pb-3',
+      'pl-3',
+      'pr-3',
+      'user-card',
+      active && 'user-card-active',
+    ]"
+  >
+    <div :class="{ 'user-card-avatar': online }">
       <v-avatar rounded size="60">
         <v-img :src="user.avatar" />
       </v-avatar>
     </div>
-    <h4 class="ml-3">{{ user.name }}</h4>
+    <div class="ml-3">
+      <h4>{{ user.name }}</h4>
+      <p class="user-card-last-message" v-if="dialog && dialog.messages.length">
+        {{ dialog.messages[dialog.messages.length - 1].text.substr(0, 25) }}
+      </p>
+    </div>
   </div>
 </template>
 
@@ -15,14 +31,21 @@ export default {
 
   methods: {
     click() {
-        this.$emit('action', this.user)
-    }
-  }
+      this.$emit('action', this.user)
+    },
+  },
+
+  computed: {
+    dialog() {
+      return this.$store.getters.getMessages.find((el) =>
+        el.users.find((us) => this.user.id === us.id)
+      )
+    },
+  },
 }
 </script>
 
 <style scoped>
-
 .user-card {
   cursor: pointer;
   user-select: none;
@@ -45,5 +68,9 @@ export default {
 
 .user-card-active {
   background-color: #f8f8f8;
+}
+
+.user-card-last-message {
+  color: grey
 }
 </style>

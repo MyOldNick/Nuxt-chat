@@ -1,5 +1,5 @@
 <template>
-  <v-row class="mt-2 mb-5 main" cols="12">
+  <v-row class="mt-2 mb-5 main" cols="12" style="overflow-x: hidden">
     <v-col
       v-if="dialogs[activeDialog]"
       class="main-section"
@@ -7,18 +7,33 @@
       xl="9"
       lg="9"
     >
-      <RecipientProfile :user="recipient" />
+      <RecipientProfile :user="recipient" @action="openMenu" />
       <Dialog :messages="dialogs[activeDialog].messages" />
       <div class="d-flex forms mt-1">
-        <input v-model="text" outlined filled placeholder="Start chatting!" class="text" />
+        <input
+          v-model="text"
+          outlined
+          filled
+          placeholder="Start chatting!"
+          class="message-input"
+        />
         <div @click="message" class="ml-3 mr-7 button">Send message</div>
       </div>
     </v-col>
     <v-col v-else class="main-section" md="9" xl="9" lg="9">
-      <div>Выберите диалог</div>
+      <div @click="openMenu">Выберите диалог (Кликнуть сюда)</div>
     </v-col>
 
-    <v-col class="dialogs-list" md="3" xl="3" lg="3">
+    <v-col
+      ref="dialogs"
+      :class="[
+        'dialogs-list',
+        isOpen ? 'dialogs-list-open' : 'dialogs-list-closed',
+      ]"
+      md="3"
+      xl="3"
+      lg="3"
+    >
       <UsersList
         @action="selectUser"
         :data="users.filter((el) => el.id !== user.id)"
@@ -50,6 +65,7 @@ export default {
   data: () => ({
     text: null,
     recipient: null,
+    isOpen: false,
   }),
 
   mounted() {
@@ -75,25 +91,35 @@ export default {
     },
 
     message() {
-      const msg = {
-        author: this.user,
-        recipient: this.recipient,
-        text: this.text,
-        socketId: this.recipient.socketId,
-        created: new Date()
+      if (this.text && this.text.length > 0 && this.text.match(/[^\s]+/)) {
+
+        const msg = {
+          author: this.user,
+          recipient: this.recipient,
+          text: this.text,
+          socketId: this.recipient.socketId,
+          created: new Date(),
+        }
+
+        this.$socket.emit('newMessage', msg)
+
+        this.$store.dispatch('selectDialog', this.recipient)
+
+        this.text = null
+
       }
-
-      this.$socket.emit('newMessage', msg)
-
-      this.$store.dispatch('selectDialog', this.recipient)
-
-      this.text = null
     },
 
     selectUser(data) {
       this.recipient = data
 
       this.$store.dispatch('selectDialog', data)
+
+      this.isOpen = false
+    },
+
+    openMenu() {
+      this.isOpen = !this.isOpen
     },
   },
 
@@ -130,14 +156,15 @@ export default {
   height: 40px;
 }
 
-.text {
+.message-input {
   width: 75%;
   padding-left: 10px;
   background-color: white;
+  border: 1px solid #cccccc;
   border-radius: 5px;
 }
 
-.text:focus {
+.message-input:focus {
   outline: none !important;
   border: 2px solid #74b9ef;
 }
@@ -148,8 +175,10 @@ export default {
 }
 
 .dialogs-list {
+  position: relative;
   background-color: white;
   padding: 0 0;
+  transition: 0.3s;
 }
 
 .button {
@@ -161,5 +190,19 @@ export default {
   padding-top: 10px;
   cursor: pointer;
   user-select: none;
+}
+
+@media (max-width: 425px) {
+  .dialogs-list {
+    position: absolute;
+    height: 650px;
+  }
+  .dialogs-list-open {
+    left: 0;
+  }
+
+  .dialogs-list-closed {
+    left: -100%;
+  }
 }
 </style>

@@ -3,17 +3,25 @@
     <UsersListNav />
     <UserCard
       @action="clickUser"
-      v-for="el in online ? data.filter((el) => el.online) : data"
+      v-for="el in online
+        ? filteredUsers.filter((el) => el.online)
+        : filteredUsers"
       :user="el"
       :key="el.id"
       :online="el.online"
       :active="el.id === activeDialog ? true : false"
     />
+    <div class="pr-3 pl-3 list-form-container">
+      <input class="list-form" placeholder="Search..." v-model="value" />
+    </div>
   </div>
 </template>
 <script>
+//components
 import UserCard from './UserCard'
 import UsersListNav from './UsersListNav'
+//helpers
+import filterUsers from '@/helpers/filter'
 
 export default {
   components: {
@@ -23,6 +31,7 @@ export default {
 
   data: () => ({
     activeDialog: null,
+    value: null,
   }),
 
   methods: {
@@ -33,12 +42,12 @@ export default {
   },
 
   computed: {
-    allUsers() {
-      return this.$store.getters.getAllUsers
-    },
-
     online() {
       return this.$store.getters.getOnline
+    },
+
+    filteredUsers() {
+      return filterUsers(this.value, this.data, 'name')
     },
   },
 }
@@ -47,4 +56,25 @@ export default {
 .list-container {
   background-color: white;
 }
+
+.list-form-container {
+  position: absolute;
+  width: 100%;
+  bottom: 20px;
+}
+
+.list-form {
+  width: 100%;
+  height: 40px;
+  padding: 0px 10px;
+  background-color: white;
+  border: 1px solid #cccccc;
+  border-radius: 5px;
+}
+
+.list-form:focus {
+  outline: none !important;
+  border: 2px solid #74b9ef;
+}
+
 </style>

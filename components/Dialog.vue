@@ -17,7 +17,7 @@ export default {
   updated() {
       const el = this.$refs.dialog
 
-      if(el) el.scrollTop = el.lastElementChild.offsetTop;
+      if(el) el.scrollTop = el.lastElementChild?.offsetTop;
   }
 }
 </script>
